@@ -17,10 +17,12 @@ package roughtime // import "github.com/Merovius/notary/roughtime"
 import (
 	"crypto/rand"
 	"crypto/sha512"
+    "encoding/json"
 	"errors"
 	"io"
 	"net"
 	"time"
+    "fmt"
 
 	config "github.com/Merovius/notary/internal/config"
 	"github.com/Merovius/notary/internal/wire"
@@ -339,17 +341,28 @@ func VerifyChain(c *config.Chain, s *config.ServersJSON) error {
 		byKey[string(s.PublicKey)] = s.Name
 	}
 	var prevHash []byte
+    var result []*config.VerifyResult
 	for i, l := range c.Links {
 		nonce := l.NonceOrBlind
 		if i > 0 {
 			nonce = hash512(prevHash, l.NonceOrBlind)
 		}
-		_, _, err := ParseResponse(l.Reply, nonce, l.ServerPublicKey)
+		t, _, err := ParseResponse(l.Reply, nonce, l.ServerPublicKey)
 		if err != nil {
 			return err
 		}
+        m := config.VerifyResult{
+            Timestamp: t.UTC().Format(time.RFC3339Nano),
+            ServerPublicKey: l.ServerPublicKey,
+        }
+        result = append(result, &m)
 		prevHash = hash512(l.Reply)
 	}
+    ch := config.VerifyChain{
+        Results: result,
+    }
+    b, _ := json.Marshal(ch)
+    fmt.Printf(string(b))
 	return nil
 }
 

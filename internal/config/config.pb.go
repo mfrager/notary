@@ -346,3 +346,14 @@ var fileDescriptor_3eaf2c85e69e9ea4 = []byte{
 	0xd3, 0xa1, 0x11, 0x23, 0xf7, 0xda, 0x9d, 0x36, 0xf4, 0x77, 0x9f, 0xbe, 0x07, 0x00, 0x00, 0xff,
 	0xff, 0x21, 0x91, 0xde, 0x7e, 0x5f, 0x02, 0x00, 0x00,
 }
+
+type VerifyResult struct {
+	Timestamp   string `json:"timestamp,omitempty"`
+	ServerPublicKey []byte `json:"server_public_key,omitempty"`
+}
+
+// Chain represents a history of Roughtime queries where each provably follows
+// the previous one.
+type VerifyChain struct {
+	Results                []*VerifyResult  `json:"results,omitempty"`
+}
