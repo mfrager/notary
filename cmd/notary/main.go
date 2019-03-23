@@ -76,7 +76,7 @@ func main() {
 func hashExternal(hashParam string) ([]byte, error) {
 	if len(hashParam) > 0 {
 		if len(hashParam) == 128 {
-			nonce, err := hex.DecodeString(*hashParam)
+			nonce, err := hex.DecodeString(hashParam)
 			return nonce, err
 		} else {
 			return nil, errors.New("invalid sha512 hash value in hex")
