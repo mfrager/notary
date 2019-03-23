@@ -36,7 +36,7 @@ func main() {
 	flag.Parse()
 
 	if flag.NArg() < 1 {
-		log.Fatalf("usage: %s [-servers <servers.json>] [-verify] [-hash <sha512>] [<file>]", os.Args[0])
+		log.Fatalf("usage: %s [-servers <servers.json>] [-verify] [-hash <sha512>] <file>", os.Args[0])
 		return
 	}
 
@@ -45,10 +45,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-    nonce, err := hashExternal(*hashParam)
-    if nonce == nil && err == nil {
-		nonce, err := hashFile(flag.Arg(0))
-    }
+    nonce, err := hashExternal(*hashParam, flag.Arg(0))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -73,7 +70,7 @@ func main() {
 	}
 }
 
-func hashExternal(hashParam string) ([]byte, error) {
+func hashExternal(hashParam string, name string) ([]byte, error) {
 	if len(hashParam) > 0 {
 		if len(hashParam) == 128 {
 			nonce, err := hex.DecodeString(hashParam)
@@ -82,7 +79,8 @@ func hashExternal(hashParam string) ([]byte, error) {
 			return nil, errors.New("invalid sha512 hash value in hex")
 		}
 	} else {
-		return nil, nil
+		nonce, err := hashFile(name)
+		return nonce, err
 	}
 }
 
