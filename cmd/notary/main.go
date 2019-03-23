@@ -44,17 +44,21 @@ func main() {
 		log.Fatal(err)
 	}
 
+    var nonce []byte
     if len(*hashParam) > 0 {
         if len(*hashParam) == 128 {
             nonce, err := hex.DecodeString(*hashParam)
+            if err != nil {
+                log.Fatal(err)
+            }
         } else {
             log.Fatal("invalid sha512 hash value in hex")
         }
     } else {
         nonce, err := hashFile(flag.Arg(0))
-    }
-    if err != nil {
-        log.Fatal(err)
+        if err != nil {
+            log.Fatal(err)
+        }
     }
 
 	if *verify {
