@@ -348,7 +348,7 @@ func VerifyChain(c *config.Chain, s *config.ServersJSON) (string, error) {
 		}
 		t, _, err := ParseResponse(l.Reply, nonce, l.ServerPublicKey)
 		if err != nil {
-			return nil, err
+			return "", err
 		}
 		m := config.VerifyResult{
 			Timestamp: t.UTC().Format(time.RFC3339Nano),
