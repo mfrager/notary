@@ -24,6 +24,7 @@ import (
 	"strings"
 	"encoding/hex"
 	"errors"
+	"fmt"
 
 	config "github.com/mfrager/notary/internal/config"
 	"github.com/mfrager/notary/roughtime"
