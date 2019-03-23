@@ -55,13 +55,14 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		if err := roughtime.VerifyChain(c, servers); err != nil {
+		info, err := roughtime.VerifyChain(c, servers)
+		if err != nil {
 			log.Fatal(err)
 		}
 		if len(c.Links) == 0 || bytes.Compare(c.Links[0].NonceOrBlind, nonce) != 0 {
 			log.Fatal("chain nonce does not match file")
 		}
-
+		fmt.Printf(info)
 		return
 	}
 

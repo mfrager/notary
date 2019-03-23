@@ -4,7 +4,7 @@
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//	 http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,12 +17,12 @@ package roughtime // import "github.com/mfrager/notary/roughtime"
 import (
 	"crypto/rand"
 	"crypto/sha512"
-    "encoding/json"
+	"encoding/json"
 	"errors"
 	"io"
 	"net"
 	"time"
-    "fmt"
+	"fmt"
 
 	config "github.com/mfrager/notary/internal/config"
 	"github.com/mfrager/notary/internal/wire"
@@ -32,25 +32,25 @@ import (
 )
 
 var (
-	contextCertificate    = []byte("RoughTime v1 delegation signature--\x00")
+	contextCertificate	= []byte("RoughTime v1 delegation signature--\x00")
 	contextSignedResponse = []byte("RoughTime v1 response signature\x00")
 )
 
 const (
 	tSIG  wire.Tag = 0x00474953
-	tNONC          = 0x434e4f4e
-	tDELE          = 0x454c4544
-	tPATH          = 0x48544150
-	tRADI          = 0x49444152
-	tPUBK          = 0x4b425550
-	tMIDP          = 0x5044494d
-	tSREP          = 0x50455253
-	tMAXT          = 0x5458414d
-	tROOT          = 0x544f4f52
-	tCERT          = 0x54524543
-	tMINT          = 0x544e494d
-	tINDX          = 0x58444e49
-	tPAD           = 0xff444150
+	tNONC		  = 0x434e4f4e
+	tDELE		  = 0x454c4544
+	tPATH		  = 0x48544150
+	tRADI		  = 0x49444152
+	tPUBK		  = 0x4b425550
+	tMIDP		  = 0x5044494d
+	tSREP		  = 0x50455253
+	tMAXT		  = 0x5458414d
+	tROOT		  = 0x544f4f52
+	tCERT		  = 0x54524543
+	tMINT		  = 0x544e494d
+	tINDX		  = 0x58444e49
+	tPAD		   = 0xff444150
 )
 
 type request struct {
@@ -71,8 +71,8 @@ func (r *request) encode(st *wire.EncodeState) {
 type response struct {
 	signedResponse
 	signature [64]byte
-	index     uint32
-	path      [][64]byte
+	index	 uint32
+	path	  [][64]byte
 	certificate
 }
 
@@ -107,7 +107,7 @@ func (r *response) encode(st *wire.EncodeState) {
 type signedResponse struct {
 	raw []byte
 
-	root     [64]byte
+	root	 [64]byte
 	midpoint time.Time
 	radius   time.Duration
 }
@@ -146,8 +146,8 @@ func (c *certificate) encode(st *wire.EncodeState) {
 type delegation struct {
 	raw []byte
 
-	min       time.Time
-	max       time.Time
+	min	   time.Time
+	max	   time.Time
 	publicKey [32]byte
 }
 
@@ -335,13 +335,13 @@ func ReadServersJSON(r io.Reader) (*config.ServersJSON, error) {
 
 // VerifyChain verifies the given chain against the list of servers and outputs
 // any validation errors.
-func VerifyChain(c *config.Chain, s *config.ServersJSON) error {
+func VerifyChain(c *config.Chain, s *config.ServersJSON) (string, error) {
 	byKey := make(map[string]string)
 	for _, s := range s.Servers {
 		byKey[string(s.PublicKey)] = s.Name
 	}
 	var prevHash []byte
-    var result []*config.VerifyResult
+	var result []*config.VerifyResult
 	for i, l := range c.Links {
 		nonce := l.NonceOrBlind
 		if i > 0 {
@@ -351,19 +351,18 @@ func VerifyChain(c *config.Chain, s *config.ServersJSON) error {
 		if err != nil {
 			return err
 		}
-        m := config.VerifyResult{
-            Timestamp: t.UTC().Format(time.RFC3339Nano),
-            ServerPublicKey: l.ServerPublicKey,
-        }
-        result = append(result, &m)
+		m := config.VerifyResult{
+			Timestamp: t.UTC().Format(time.RFC3339Nano),
+			ServerPublicKey: l.ServerPublicKey,
+		}
+		result = append(result, &m)
 		prevHash = hash512(l.Reply)
 	}
-    ch := config.VerifyChain{
-        Results: result,
-    }
-    b, _ := json.Marshal(ch)
-    fmt.Printf(string(b))
-	return nil
+	ch := config.VerifyChain{
+		Results: result,
+	}
+	b, _ := json.Marshal(ch)
+	return string(b), nil
 }
 
 // LoadChain loads a serialized chain from r.
