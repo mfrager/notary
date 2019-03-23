@@ -22,6 +22,7 @@ import (
 	"log"
 	"os"
 	"strings"
+	"encoding/hex"
 
 	config "github.com/mfrager/notary/internal/config"
 	"github.com/mfrager/notary/roughtime"
@@ -30,10 +31,11 @@ import (
 func main() {
 	verify := flag.Bool("verify", false, "verify a given chain")
 	serversJSON := flag.String("servers", "", "server-list to use")
+	hashParam := flag.String("hash", "", "pre-computed sha512 hash in hex")
 	flag.Parse()
 
 	if flag.NArg() < 1 {
-		log.Fatalf("usage: %s [-servers <servers.json>] [-verify] <file>", os.Args[0])
+		log.Fatalf("usage: %s [-servers <servers.json>] [-verify] [-hash <sha512>] [<file>]", os.Args[0])
 		return
 	}
 
@@ -42,10 +44,18 @@ func main() {
 		log.Fatal(err)
 	}
 
-	nonce, err := hashFile(flag.Arg(0))
-	if err != nil {
-		log.Fatal(err)
-	}
+    if len(*hashParam) > 0 {
+        if len(*hashParam) == 128 {
+            nonce, err := hex.DecodeString(*hashParam)
+        } else {
+            log.Fatal("invalid sha512 hash value in hex")
+        }
+    } else {
+        nonce, err := hashFile(flag.Arg(0))
+    }
+    if err != nil {
+        log.Fatal(err)
+    }
 
 	if *verify {
 		c, err := roughtime.LoadChain(os.Stdin)
