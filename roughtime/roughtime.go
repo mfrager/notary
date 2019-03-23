@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package roughtime // import "github.com/Merovius/notary/roughtime"
+package roughtime // import "github.com/mfrager/notary/roughtime"
 
 import (
 	"crypto/rand"
@@ -24,8 +24,8 @@ import (
 	"time"
     "fmt"
 
-	config "github.com/Merovius/notary/internal/config"
-	"github.com/Merovius/notary/internal/wire"
+	config "github.com/mfrager/notary/internal/config"
+	"github.com/mfrager/notary/internal/wire"
 	"github.com/golang/protobuf/jsonpb"
 
 	"golang.org/x/crypto/ed25519"

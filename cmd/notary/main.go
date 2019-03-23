@@ -23,8 +23,8 @@ import (
 	"os"
 	"strings"
 
-	config "github.com/Merovius/notary/internal/config"
-	"github.com/Merovius/notary/roughtime"
+	config "github.com/mfrager/notary/internal/config"
+	"github.com/mfrager/notary/roughtime"
 )
 
 func main() {
