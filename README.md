@@ -15,3 +15,5 @@ The servers in the chain then sign this nonce, together with their view of what
 the current time is. The resulting chain can then be stored and used as proof
 that the file existed previously (as long as at least one server in the chain
 is trusted).
+
+Notary tool updated for improved output and easier CLI use.
