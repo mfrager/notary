@@ -16,4 +16,4 @@ the current time is. The resulting chain can then be stored and used as proof
 that the file existed previously (as long as at least one server in the chain
 is trusted).
 
-Notary tool updated for improved output and easier CLI use.
+Notary tool updated for improved output and easier CLI use. This update makes the package more useful as a crypto notary.
